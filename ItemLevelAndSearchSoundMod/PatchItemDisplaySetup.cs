@@ -5,6 +5,8 @@ using Duckov;
 using Duckov.UI;
 using Duckov.UI.Animations;
 using FMOD;
+using FMOD.Studio;
+using FMODUnity;
 using HarmonyLib;
 using ItemStatsSystem;
 using UnityEngine;
@@ -94,12 +96,10 @@ namespace ItemLevelAndSearchSoundMod
                 else
                 {
                     (string eventName, float volume) = Util.GetInspectedSound(playSoundLevel);
-                    if (AudioManager.TryCreateEventInstance(eventName, out var eventInstance))
-                    {
-                        eventInstance.setVolume(volume);
-                        eventInstance.start();
-                        eventInstance.release();
-                    }
+                    EventInstance eventInstance = RuntimeManager.CreateInstance("event:/" + eventName);
+                    eventInstance.setVolume(volume);
+                    eventInstance.start();
+                    eventInstance.release();
                 }
             }
         }
