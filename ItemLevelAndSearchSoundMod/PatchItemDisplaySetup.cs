@@ -18,7 +18,8 @@ namespace ItemLevelAndSearchSoundMod
     public class PatchItemDisplaySetup
     {
         private static HashSet<ItemDisplay> updatedAnimationItemDisplays = new HashSet<ItemDisplay>();
-        private static Dictionary<Item, ItemDisplay> itemDisplayMap = new Dictionary<Item, ItemDisplay>();
+        private static Dictionary<Item, ItemDisplay> ItemDisplayMap = new Dictionary<Item, ItemDisplay>();
+        
         static void Postfix(ItemDisplay __instance, Item target)
         {
             if (__instance == null)
@@ -35,7 +36,7 @@ namespace ItemLevelAndSearchSoundMod
             // 情况1. 在搜索中关闭了容器，之后再打开容器，OnInspectionStateChanged事件未消耗
             // 情况2. 自动拾取Mod会在不触发onInspectionStateChanged的情况下拾取道具，Item会回到对象池，事件就会留到下次触发
             target.onInspectionStateChanged -= OnInspectionStateChanged;
-            itemDisplayMap.Remove(target);
+            ItemDisplayMap.Remove(target);
 
             if (!updatedAnimationItemDisplays.Contains(__instance))
             {
@@ -55,7 +56,7 @@ namespace ItemLevelAndSearchSoundMod
             {
                 // 物品还未搜索的情况
                 target.onInspectionStateChanged += OnInspectionStateChanged;
-                itemDisplayMap[target] = __instance;
+                ItemDisplayMap[target] = __instance;
 
                 SetColor(__instance, Util.GetItemValueLevelColor(ItemValueLevel.White));
                 return;
@@ -66,9 +67,9 @@ namespace ItemLevelAndSearchSoundMod
             SetColor(__instance, color);
         }
 
-        static void OnInspectionStateChanged(Item item)
+        public static void OnInspectionStateChanged(Item item)
         {
-            if (!itemDisplayMap.TryGetValue(item, out ItemDisplay itemDisplay))
+            if (!ItemDisplayMap.TryGetValue(item, out ItemDisplay itemDisplay))
             {
                 return;
             }
@@ -86,8 +87,7 @@ namespace ItemLevelAndSearchSoundMod
                 }
                 if (ModBehaviour.ItemValueLevelSound.TryGetValue(playSoundLevel, out Sound sound))
                 {
-                    FMODUnity.RuntimeManager.GetBus("bus:/Master/SFX").getChannelGroup(out ChannelGroup sfxGroup);
-                    RESULT result = FMODUnity.RuntimeManager.CoreSystem.playSound(sound, sfxGroup, false, out Channel channel);
+                    RESULT result = FMODUnity.RuntimeManager.CoreSystem.playSound(sound, ModBehaviour.SfxGroup, false, out Channel channel);
                     if (result != RESULT.OK)
                     {
                         ModBehaviour.ErrorMessage += "FMOD failed to play sound: " + result + "\n";

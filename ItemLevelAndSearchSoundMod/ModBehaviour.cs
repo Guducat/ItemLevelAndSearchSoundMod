@@ -1,10 +1,13 @@
-﻿using Duckov.UI.Animations;
+﻿using Duckov.UI;
+using Duckov.UI.Animations;
 using Duckov.Utilities;
 using FMOD;
 using HarmonyLib;
+using ItemStatsSystem;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -39,6 +42,7 @@ namespace ItemLevelAndSearchSoundMod
 
         public static Dictionary<ItemValueLevel, Sound> ItemValueLevelSound = new Dictionary<ItemValueLevel, Sound>();
         public static string ErrorMessage = "";
+        public static ChannelGroup SfxGroup;
 
         public static Color White;
         public static Color Green;
@@ -50,9 +54,17 @@ namespace ItemLevelAndSearchSoundMod
 
         private Harmony harmony;
 
+        private Channel searchingChannel;
+        /// <summary>
+        /// 搜索中播放的音效
+        /// </summary>
+        private static Sound searchingSound;
+
         private void OnEnable()
         {
             UnityEngine.Debug.Log("ItemLevelAndSearchSoundMod OnEnable");
+
+            FMODUnity.RuntimeManager.GetBus("bus:/Master/SFX").getChannelGroup(out SfxGroup);
 
             DisableModSearchTime = File.Exists("ItemLevelAndSearchSoundMod/DisableModSearchTime.txt");
 
@@ -68,6 +80,20 @@ namespace ItemLevelAndSearchSoundMod
 
             try
             {
+                string searchingSoundPath = "ItemLevelAndSearchSoundMod/Searching.mp3";
+                if (File.Exists(searchingSoundPath))
+                {
+                    var soundResult = FMODUnity.RuntimeManager.CoreSystem.createSound(searchingSoundPath, MODE.LOOP_NORMAL, out searchingSound);
+                    if (soundResult != RESULT.OK)
+                    {
+                        ErrorMessage += "FMOD failed to create searching sound: " + soundResult + "\n";
+                    }
+                    else
+                    {
+                        UnityEngine.Debug.Log("ItemLevelAndSearchSoundMod Load Searching Sound Success");
+                    }
+                }
+
                 foreach (ItemValueLevel item in Enum.GetValues(typeof(ItemValueLevel)))
                 {
                     string path = $"ItemLevelAndSearchSoundMod/{(int) item}.mp3";
@@ -97,8 +123,43 @@ namespace ItemLevelAndSearchSoundMod
             ColorUtility.TryParseHtmlString("#ff585896", out LightRed);
             ColorUtility.TryParseHtmlString("#bb000096", out Red);
 
+            ItemUtilities.OnItemSentToPlayerInventory += OnItemSentToPlayerInventory;
+            InteractableLootbox.OnStartLoot += OnStartLoot;
+            InteractableLootbox.OnStopLoot += OnStopLoot;
+
             harmony = new Harmony(Id);
             harmony.PatchAll(Assembly.GetExecutingAssembly());
+        }
+
+        private void OnStartLoot(InteractableLootbox lootbox)
+        {
+            if (!lootbox.Inventory.NeedInspection || lootbox.Inventory.Content.All(item => item.Inspected))
+            {
+                return;
+            }
+            if (!searchingSound.hasHandle())
+            {
+                return;
+            }
+            RESULT result = FMODUnity.RuntimeManager.CoreSystem.playSound(searchingSound, SfxGroup, false, out searchingChannel);
+            if (result != RESULT.OK)
+            {
+                ErrorMessage += "FMOD failed to play searching sound: " + result + "\n";
+            }
+        }
+
+        private void OnStopLoot(InteractableLootbox lootbox)
+        {
+            if (searchingChannel.hasHandle())
+            {
+                searchingChannel.stop();
+                searchingChannel = default;
+            }
+        }
+
+        private void OnItemSentToPlayerInventory(Item item)
+        {
+            item.onInspectionStateChanged -= PatchItemDisplaySetup.OnInspectionStateChanged;
         }
 
         private void OnGUI()
@@ -113,7 +174,16 @@ namespace ItemLevelAndSearchSoundMod
 
         private void OnDisable()
         {
+            ItemUtilities.OnItemSentToPlayerInventory -= OnItemSentToPlayerInventory;
+            InteractableLootbox.OnStartLoot -= OnStartLoot;
+            InteractableLootbox.OnStopLoot -= OnStopLoot;
+
             harmony.UnpatchAll(Id);
+
+            if (searchingSound.hasHandle())
+            {
+                searchingSound.release();
+            }
 
             foreach (var sound in ItemValueLevelSound)
             {
