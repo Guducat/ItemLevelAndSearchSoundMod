@@ -21,15 +21,25 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=3588386576
 
 ## 使用方法
 
+注意：游戏路径不能存在中文及特殊符号，否则功能可能不会生效。
+
 ### Steam平台玩家
 
 1. 打开网页[创意工坊地址](https://steamcommunity.com/sharedfiles/filedetails/?id=3588386576)，订阅Mod
 2. 打开游戏，主菜单进入Mods界面，勾选Mod
 
-### 非Steam平台玩家
+### 非Steam平台Windows玩家
 
 1. 打开网页[Release](https://github.com/dzj0821/ItemLevelAndSearchSoundMod/releases)，下载Mod压缩包
 2. 打开游戏安装目录，在Duckov_Data文件夹下创建Mods文件夹，将压缩包解压到Mods文件夹下，此时文件结构应为：Duckov_Data->Mods->ItemLevelAndSearchSoundMod->ItemLevelAndSearchSoundMod.dll
 3. 打开游戏，主菜单进入Mods界面，勾选Mod
 
-注意：游戏路径不能存在中文及特殊符号，否则功能可能不会生效。
+### 非Steam平台MacOS玩家
+
+**注意：尚不支持从AppStore下载的游戏**
+
+1. 打开网页[Release](https://github.com/dzj0821/ItemLevelAndSearchSoundMod/releases)，下载Mod压缩包
+2. 右键游戏包，选择显示包内容，在Contents文件夹下创建Mods文件夹，将压缩包解压到Mods文件夹下，此时文件结构应为：Duckov.app->Contents->Mods->ItemLevelAndSearchSoundMod->ItemLevelAndSearchSoundMod.dll
+3. 打开游戏，主菜单进入Mods界面，勾选Mod
+
+注意：由于部分其他Mod不兼容MacOS，启用这部分Mod会导致大部分Mod失效（即使有些兼容MacOS）。如果勾选这个Mod后功能不生效，麻烦尝试关闭所有其他Mod进行测试。

@@ -21,15 +21,25 @@ To disable the Mod's custom item search duration, simply create a file named `Di
 
 ## How to Use
 
-### For Steam Users
+### Steam Players
 
-1. Visit the [Steam Workshop page](https://steamcommunity.com/sharedfiles/filedetails/?id=3588386576) and subscribe to the Mod
-2. Launch the game, go to the Mods section in the main menu, and enable the Mod
+1. Open the [Workshop page](https://steamcommunity.com/sharedfiles/filedetails/?id=3588386576) and subscribe to the mod.
+2. Launch the game, go to the Mods menu from the main menu, and enable the mod.
 
-### For Non-Steam Users
+### Non-Steam Windows Players
 
-1. Go to the [Release](https://github.com/dzj0821/ItemLevelAndSearchSoundMod/releases) page and download the Mod archive
-2. In your game installation directory, create a `Mods` folder inside the `Duckov_Data` folder (if it doesn't already exist), and extract the Mod archive there. The final structure should be: `Duckov_Data->Mods->ItemLevelAndSearchSoundMod->ItemLevelAndSearchSoundMod.dll`
-3. Launch the game, go to the Mods section in the main menu, and enable the Mod
+1. Open the [Release page](https://github.com/dzj0821/ItemLevelAndSearchSoundMod/releases) and download the mod archive.
+2. Open the game installation directory, create a folder named “Mods” inside the “Duckov_Data” folder, and extract the mod archive there. The file structure should look like this:
+   Duckov_Data -> Mods -> ItemLevelAndSearchSoundMod -> ItemLevelAndSearchSoundMod.dll
+3. Launch the game, go to the Mods menu from the main menu, and enable the mod.
 
-Note: The game path must not contain special symbols, otherwise the feature may not work properly.
+### Non-Steam macOS Players
+
+Note: The App Store version of the game is not supported yet.
+
+1. Open the [Release page](https://github.com/dzj0821/ItemLevelAndSearchSoundMod/releases) and download the mod archive.
+2. Right-click the game app, select “Show Package Contents,” then create a “Mods” folder inside Contents, and extract the mod archive there. The file structure should look like this:
+   Duckov.app -> Contents -> Mods -> ItemLevelAndSearchSoundMod -> ItemLevelAndSearchSoundMod.dll
+3. Launch the game, go to the Mods menu from the main menu, and enable the mod.
+
+Note: Some other mods are incompatible with macOS. Enabling those mods may cause most mods to stop working (even ones that are macOS-compatible). If this mod doesn’t function properly after being enabled, please try disabling all other mods and test again.
