@@ -91,9 +91,9 @@ namespace ItemLevelAndSearchSoundMod
                 return ParseDisplayQuality(item.DisplayQuality);
             }
 
-            if (item.TypeID == 862)
+            if (item.TypeID == 862 || item.TypeID == 1238)
             {
-                // 带火AK-47的价格和普通AK-47是一样的，特殊处理下
+                // 带火AK-47、MF-毒液的价格和普通是一样的，特殊处理下
                 return ItemValueLevel.Orange;
             }
             
