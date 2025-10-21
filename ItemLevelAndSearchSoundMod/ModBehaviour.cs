@@ -133,7 +133,7 @@ namespace ItemLevelAndSearchSoundMod
 
         private void OnStartLoot(InteractableLootbox lootbox)
         {
-            if (!lootbox.Inventory.NeedInspection || lootbox.Inventory.Content.All(item => item.Inspected))
+            if (!lootbox.Inventory.NeedInspection || lootbox.Inventory.Content.All(item => item == null || item.Inspected))
             {
                 return;
             }
