@@ -42,7 +42,21 @@ namespace ItemLevelAndSearchSoundMod
 
         public static Dictionary<ItemValueLevel, Sound> ItemValueLevelSound = new Dictionary<ItemValueLevel, Sound>();
         public static string ErrorMessage = "";
-        public static ChannelGroup SfxGroup;
+        public static ChannelGroup SfxGroup
+        {
+            get
+            {
+                if (!sfxGroup.hasHandle())
+                {
+                    RESULT result = FMODUnity.RuntimeManager.GetBus("bus:/Master/SFX").getChannelGroup(out sfxGroup);
+                    if (result != RESULT.OK)
+                    {
+                        UnityEngine.Debug.LogError("ItemLevelAndSearchSoundMod FMOD failed to get sfx group: " + result);
+                    }
+                }
+                return sfxGroup;
+            }
+        }
 
         public static Color White;
         public static Color Green;
@@ -51,20 +65,19 @@ namespace ItemLevelAndSearchSoundMod
         public static Color Orange;
         public static Color LightRed;
         public static Color Red;
-
-        private Harmony harmony;
-
-        private Channel searchingChannel;
         /// <summary>
         /// 搜索中播放的音效
         /// </summary>
         private static Sound searchingSound;
+        private static ChannelGroup sfxGroup;
+
+        private Harmony harmony;
+
+        private Channel searchingChannel;
 
         private void OnEnable()
         {
             UnityEngine.Debug.Log("ItemLevelAndSearchSoundMod OnEnable");
-
-            FMODUnity.RuntimeManager.GetBus("bus:/Master/SFX").getChannelGroup(out SfxGroup);
 
             DisableModSearchTime = File.Exists("ItemLevelAndSearchSoundMod/DisableModSearchTime.txt");
 
